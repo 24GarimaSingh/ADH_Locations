@@ -1,4 +1,3 @@
-using AFH_Locations_Project.Models;
 using AFHOfficeFeedApi.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,9 +17,16 @@ namespace AFH_Locations_Project.Controllers
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] int skip = 0, [FromQuery] int take = 4)
         {
-            var allOffices = await _locationService.GetLocationsAsync();
-            var paginated = allOffices.Skip(skip).Take(take);
-            return Ok(paginated);
+            try
+            {
+                var allOffices = await _locationService.GetLocationsAsync();
+                var paginated = allOffices.Skip(skip).Take(take);
+                return Ok(paginated);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while fetching locations.");
+            }
         }
     }
 }

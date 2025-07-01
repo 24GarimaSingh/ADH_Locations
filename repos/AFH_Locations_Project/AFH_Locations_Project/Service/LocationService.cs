@@ -23,12 +23,19 @@ public class LocationService
             return cachedLocations;
         }
 
-        var result = await _httpClient.GetFromJsonAsync<List<AFHOfficeFeedModel>>(ApiUrl);
-        var locations = result?.Take(12).ToList() ?? new List<AFHOfficeFeedModel>();
+        try
+        {
+            var result = await _httpClient.GetFromJsonAsync<List<AFHOfficeFeedModel>>(ApiUrl);
+            var locations = result?.Take(12).ToList() ?? new List<AFHOfficeFeedModel>();
 
-       _cache.Set(cacheKey, locations, TimeSpan.FromMinutes(1));
+            _cache.Set(cacheKey, locations, TimeSpan.FromMinutes(1));
 
-        return locations;
-    
+            return locations;
+        }
+        catch (Exception ex)
+        {
+            return new List<AFHOfficeFeedModel>();
+        }
     }
+
 }
